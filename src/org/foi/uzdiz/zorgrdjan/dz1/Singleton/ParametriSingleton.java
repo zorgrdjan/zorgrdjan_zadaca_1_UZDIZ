@@ -54,60 +54,62 @@ public class ParametriSingleton {
     private static int velikiMetal;
     private static int velikiBio;
     private static int velikiMijesano;
+    private static Properties podaciParametri;
 
     private ParametriSingleton() {
-        try {
-            Properties prop = new Properties();
-            Path currentRelativePath = Paths.get("");
-            String s = currentRelativePath.toAbsolutePath().toString();
-          //  System.out.println("Current relative path is: " + s.replace("\\dist", ""));
-            s = s.replace("\\dist", "");
-            String adresa = "DZ_1_parametri.txt";
-            FileInputStream inputStream = new FileInputStream(adresa);
-            InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8");
-            prop.load(reader);
-            this.ulice = prop.getProperty("ulice");
-            this.spremnici = prop.getProperty("spremnici");
-            this.vozila = prop.getProperty("vozila");
-            this.izlaz = prop.getProperty("izlaz");
-            this.ispis = Integer.parseInt(prop.getProperty("ispis"));
-            this.sjemeGeneratora = Integer.parseInt(prop.getProperty("sjemeGeneratora"));
-            this.brojDecimala = Integer.parseInt(prop.getProperty("brojDecimala"));
-            this.brojRadnihCiklusaZaOdvoz = Integer.parseInt(prop.getProperty("brojRadnihCiklusaZaOdvoz"));
-            this.preuzimanje = Integer.parseInt(prop.getProperty("preuzimanje"));
-            this.maliMin = Integer.parseInt(prop.getProperty("maliMin"));
-            this.srednjiMin = Integer.parseInt(prop.getProperty("srednjiMin"));
-            this.velikiMin = Integer.parseInt(prop.getProperty("velikiMin"));
-            this.maliStaklo = Integer.parseInt(prop.getProperty("maliStaklo"));
-            this.maliPapir = Integer.parseInt(prop.getProperty("maliPapir"));
-            this.maliMetal = Integer.parseInt(prop.getProperty("maliMetal"));
-            this.maliBio = Integer.parseInt(prop.getProperty("maliBio"));
-            this.maliMijesano = Integer.parseInt(prop.getProperty("maliMješano"));
-            this.srednjiStaklo = Integer.parseInt(prop.getProperty("srednjiStaklo"));
-            this.srednjiPapir = Integer.parseInt(prop.getProperty("srednjiPapir"));
-            this.srednjiMetal = Integer.parseInt(prop.getProperty("srednjiMetal"));
-            this.srednjiBio = Integer.parseInt(prop.getProperty("srednjiBio"));
-            this.srednjiMijesano = Integer.parseInt(prop.getProperty("srednjiMješano"));
-            this.velikiStaklo = Integer.parseInt(prop.getProperty("velikiStaklo"));
-            this.velikiPapir = Integer.parseInt(prop.getProperty("velikiPapir"));
-            this.velikiMetal = Integer.parseInt(prop.getProperty("velikiMetal"));
-            this.velikiBio = Integer.parseInt(prop.getProperty("velikiBio"));
-            this.velikiMijesano = Integer.parseInt(prop.getProperty("velikiMješano"));
-        } catch (IOException ex) {
-            Logger.getLogger(ParametriSingleton.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            Properties prop = new Properties();
+//            Path currentRelativePath = Paths.get("");
+//            String s = currentRelativePath.toAbsolutePath().toString();
+//          //  System.out.println("Current relative path is: " + s.replace("\\dist", ""));
+//          //  s = s.replace("\\dist", "");
+//          //  String adresa = "DZ_1_parametri.txt";
+//          //  FileInputStream inputStream = new FileInputStream(adresa);
+////            InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8");
+////            prop.load(reader);
+////            this.ulice = prop.getProperty("ulice");
+////            this.spremnici = prop.getProperty("spremnici");
+////            this.vozila = prop.getProperty("vozila");
+////            this.izlaz = prop.getProperty("izlaz");
+////            this.ispis = Integer.parseInt(prop.getProperty("ispis"));
+////            this.sjemeGeneratora = Integer.parseInt(prop.getProperty("sjemeGeneratora"));
+////            this.brojDecimala = Integer.parseInt(prop.getProperty("brojDecimala"));
+////            this.brojRadnihCiklusaZaOdvoz = Integer.parseInt(prop.getProperty("brojRadnihCiklusaZaOdvoz"));
+////            this.preuzimanje = Integer.parseInt(prop.getProperty("preuzimanje"));
+////            this.maliMin = Integer.parseInt(prop.getProperty("maliMin"));
+////            this.srednjiMin = Integer.parseInt(prop.getProperty("srednjiMin"));
+////            this.velikiMin = Integer.parseInt(prop.getProperty("velikiMin"));
+////            this.maliStaklo = Integer.parseInt(prop.getProperty("maliStaklo"));
+////            this.maliPapir = Integer.parseInt(prop.getProperty("maliPapir"));
+////            this.maliMetal = Integer.parseInt(prop.getProperty("maliMetal"));
+////            this.maliBio = Integer.parseInt(prop.getProperty("maliBio"));
+////            this.maliMijesano = Integer.parseInt(prop.getProperty("maliMješano"));
+////            this.srednjiStaklo = Integer.parseInt(prop.getProperty("srednjiStaklo"));
+////            this.srednjiPapir = Integer.parseInt(prop.getProperty("srednjiPapir"));
+////            this.srednjiMetal = Integer.parseInt(prop.getProperty("srednjiMetal"));
+////            this.srednjiBio = Integer.parseInt(prop.getProperty("srednjiBio"));
+////            this.srednjiMijesano = Integer.parseInt(prop.getProperty("srednjiMješano"));
+////            this.velikiStaklo = Integer.parseInt(prop.getProperty("velikiStaklo"));
+////            this.velikiPapir = Integer.parseInt(prop.getProperty("velikiPapir"));
+////            this.velikiMetal = Integer.parseInt(prop.getProperty("velikiMetal"));
+////            this.velikiBio = Integer.parseInt(prop.getProperty("velikiBio"));
+////            this.velikiMijesano = Integer.parseInt(prop.getProperty("velikiMješano"));
+//        } catch (IOException ex) {
+//            Logger.getLogger(ParametriSingleton.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
     private ParametriSingleton(String adresa) {
         try {
             Properties prop = new Properties();
-            Path currentRelativePath = Paths.get("");
-            String s = currentRelativePath.toAbsolutePath().toString();
+         //   Path currentRelativePath = Paths.get("");
+          //  String s = currentRelativePath.toAbsolutePath().toString();
           //  System.out.println("Current relative path is: " + s.replace("\\dist", ""));
            // s = s.replace("\\dist", "");
           //  String adresa = "DZ_1_parametri.txt";
             FileInputStream inputStream = new FileInputStream(adresa);
             InputStreamReader reader = new InputStreamReader(inputStream, "UTF-8");
             prop.load(reader);
+            this.podaciParametri=prop;
             this.ulice = prop.getProperty("ulice");
             this.spremnici = prop.getProperty("spremnici");
             this.vozila = prop.getProperty("vozila");
@@ -174,6 +176,14 @@ public class ParametriSingleton {
         String adress = s.replace("\\dist", "");
 
         return adress+"\\podaci\\"+adresa;
+    }
+
+    public static Properties getPodaciParametri() {
+        return podaciParametri;
+    }
+
+    public static void setPodaciParametri(Properties podaciParametri) {
+        ParametriSingleton.podaciParametri = podaciParametri;
     }
 
     public  int generateRandomInt(int brojOd, int brojDo) {

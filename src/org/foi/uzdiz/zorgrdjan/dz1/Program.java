@@ -21,6 +21,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.foi.uzdiz.zorgrdjan.dz1.AbstractFactory.AbstractFactory;
 import org.foi.uzdiz.zorgrdjan.dz1.AbstractFactory.FactoryProducer;
+import org.foi.uzdiz.zorgrdjan.dz1.KomandeChain.ChainKomande;
+import org.foi.uzdiz.zorgrdjan.dz1.KomandeChain.KomandaIsprazni;
+import org.foi.uzdiz.zorgrdjan.dz1.KomandeChain.KomandaKontrola;
+import org.foi.uzdiz.zorgrdjan.dz1.KomandeChain.KomandaKreni;
+import org.foi.uzdiz.zorgrdjan.dz1.KomandeChain.KomandaKvar;
+import org.foi.uzdiz.zorgrdjan.dz1.KomandeChain.KomandaPripremi;
+import org.foi.uzdiz.zorgrdjan.dz1.KomandeChain.KomandaStatus;
 import org.foi.uzdiz.zorgrdjan.dz1.Korisnik.KorisnikNovi;
 import org.foi.uzdiz.zorgrdjan.dz1.Korisnik.MaliKorisnik;
 import org.foi.uzdiz.zorgrdjan.dz1.Korisnik.SrednjiKorisnik;
@@ -42,7 +49,7 @@ import org.foi.uzdiz.zorgrdjan.dz1.Vozila.VoziloStaklo;
 
 public class Program {
 
-    private List<Ulice> popisUlica = new ArrayList<Ulice>();
+    public static List<Ulice> popisUlica = new ArrayList<Ulice>();
     private List<Vozila> vozila = new ArrayList<Vozila>();
     private List<Spremnici> popisSpremnika = new ArrayList<Spremnici>();
     public List<Vozilo> popisVozila = new ArrayList<Vozilo>();
@@ -51,8 +58,9 @@ public class Program {
     public static int idKontejnera = 1;
     public static boolean flagOtpad = false;
     public Report noviReport = new Report.ReportBuilder("Report za EZO").build();
-
+    private List<String> komande=new ArrayList<String>();
     public static int spremnikbroj = 0;
+    public List<String> listaPodrucja=new ArrayList<>();
 
     public void UcitajVozila() {
         ParametriSingleton parametar = ParametriSingleton.getInstance();
@@ -68,18 +76,16 @@ public class Program {
             String line;
             br.readLine ();
             while ((line  = br.readLine()) != null) {
-              //  System.out.println("Linija:" + line);
                 String[] dijeloviVozila = line.split(";");
                 String tip = "";
                 String vrsta = "";
-                if (Integer.parseInt(dijeloviVozila[1]) == 0) {
+                if (Integer.parseInt(dijeloviVozila[2]) == 0) {
                     tip = "Dizel";
                 } else {
                     tip = "Električni";
                 }
-                Vozila upisiVozilo = new Vozila(dijeloviVozila[0], tip, dijeloviVozila[2], Integer.parseInt(dijeloviVozila[3]), dijeloviVozila[4]);
+                Vozila upisiVozilo = new Vozila(dijeloviVozila[0],dijeloviVozila[1], tip, dijeloviVozila[3], Integer.parseInt(dijeloviVozila[4]), dijeloviVozila[5]);
                 vozila.add(upisiVozilo);
-                //    System.out.println(line);
             }
         } catch (IOException e) {
             System.out.println("Exception:" + e);
@@ -103,6 +109,8 @@ public class Program {
             br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] dijeloviSpremnika = line.split(";");
+                if(dijeloviSpremnika.length==6)
+                {
                 Spremnici noviSpremnik = new Spremnici(dijeloviSpremnika[0],
                         Integer.parseInt(dijeloviSpremnika[1]),
                         Integer.parseInt(dijeloviSpremnika[2]),
@@ -111,6 +119,10 @@ public class Program {
                         Integer.parseInt(dijeloviSpremnika[5]));
                 //   System.out.println(line);
                 popisSpremnika.add(noviSpremnik);
+                }
+                else{
+                    System.out.println("Pogresan zapis Spremnika:"+line);
+                }
             }
         } catch (IOException e) {
             System.out.println("Error:" + e);
@@ -130,11 +142,17 @@ public class Program {
             br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] dijeloviUlice = line.split(";");
-                Ulice nova = new Ulice(dijeloviUlice[0], Integer.parseInt(dijeloviUlice[1]),
-                        Integer.parseInt(dijeloviUlice[2]),
+                if(dijeloviUlice.length==6)
+                {
+                Ulice nova = new Ulice(dijeloviUlice[0],dijeloviUlice[1], Integer.parseInt(dijeloviUlice[2]),
                         Integer.parseInt(dijeloviUlice[3]),
-                        Integer.parseInt(dijeloviUlice[4]));
+                        Integer.parseInt(dijeloviUlice[4]),
+                        Integer.parseInt(dijeloviUlice[5]));
                 popisUlica.add(nova);
+                }
+                else{
+                    System.out.println("Pogresan zapis ulice:"+line);
+                }
                 //  System.out.println(line);
             }
         } catch (IOException e) {
@@ -1172,6 +1190,64 @@ public class Program {
         System.out.println(ispis);
         Report report = new Report.ReportBuilder(ispis).build();
         pisiIzvjestaj(report);
+    }
+
+    void ucitajDispecer() {
+        ParametriSingleton parametar=ParametriSingleton.getInstance();
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream(parametar.getPodaciParametri().getProperty("dispečer")), "UTF8"))) {
+            String line;
+            br.readLine ();
+            while ((line  = br.readLine()) != null) {
+                komande.add(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Exception:" + e);
+        }
+    }
+    void ispisiKomande()
+    {
+        for (String komanda : komande) {
+            System.out.println("Komanda:"+komanda);
+        }
+    }
+
+    void IzvrsiKomande() {
+        ChainKomande chain = new KomandaKreni();
+	ChainKomande chainStatus = new KomandaStatus();
+	ChainKomande chainKvar = new KomandaKvar();
+	ChainKomande chainPripremi = new KomandaPripremi();
+	ChainKomande chainIsprazni = new KomandaIsprazni();
+        ChainKomande chainKontrola = new KomandaKontrola();
+
+	chain.setNext(chainStatus);
+	chainStatus.setNext(chainKvar);
+	chainKvar.setNext(chainPripremi);
+	chainPripremi.setNext(chainIsprazni);
+        chainIsprazni.setNext(chainKontrola);
+        for (String komanda : komande) {
+            chain.executeCommand(komanda);
+        }
+    }
+    void ucitajPodrucja() {
+        ParametriSingleton parametar=ParametriSingleton.getInstance();
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream(parametar.getPodaciParametri().getProperty("područja")), "UTF8"))) {
+            String line;
+            br.readLine ();
+            while ((line  = br.readLine()) != null) {
+                listaPodrucja.add(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Exception:" + e);
+        }
+        for (String string : listaPodrucja) {
+            System.out.println(string);
+            
+        }
+        
     }
 
 }

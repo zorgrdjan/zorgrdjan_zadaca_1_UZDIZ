@@ -15,7 +15,8 @@ import org.foi.uzdiz.zorgrdjan.dz1.SpremnikZaSmece;
  */
 public class Ulice {
 
-    private String naziv;
+    private String id_ulice;
+    private String naziv;   
     private int brojMjesta;
     private int udioMali;
     private int udioSrednji;
@@ -31,7 +32,8 @@ public class Ulice {
     private float ukupniOtpadBio = 0;
     private float ukupniOtpadMijesano = 0;
 
-    public Ulice(String naziv, int brojMjesta, int udioMali, int udioSrednji, int udioVeliki) {
+    public Ulice(String id_ulice,String naziv, int brojMjesta, int udioMali, int udioSrednji, int udioVeliki) {
+        this.id_ulice=id_ulice;
         this.naziv = naziv;
         this.brojMjesta = brojMjesta;
         this.udioMali = udioMali;
@@ -88,7 +90,7 @@ public class Ulice {
     }
 
     public String ispis() {
-        return "Naziv:" + this.naziv + " Broj mjesta:" + this.brojMjesta + " Udio mali:" + this.udioMali + " Udio srednji:" + this.udioSrednji + " Udio veliki:" + this.udioVeliki;
+        return "ID Ulice: "+id_ulice+" Naziv:" + this.naziv + " Broj mjesta:" + this.brojMjesta + " Udio mali:" + this.udioMali + " Udio srednji:" + this.udioSrednji + " Udio veliki:" + this.udioVeliki;
     }
 
     public int getBrojMali() {
@@ -172,6 +174,14 @@ public class Ulice {
                "Iznos otpada Metal: "+getUkupniOtpadMetal()+newline+
                "Iznos otpada Bio: "+getUkupniOtpadBio()+newline+
                "Iznos otpada Mijesano: "+getUkupniOtpadMijesano();
+    }
+
+    public String getId_ulice() {
+        return id_ulice;
+    }
+
+    public void setId_ulice(String id_ulice) {
+        this.id_ulice = id_ulice;
     }
     
 }
